@@ -27,9 +27,9 @@ TYPE_PATTERN = r"- Type: `([^`]+)`"
 DEFAULT_PATTERN = r"- Default: `?([^`\n]+)`?"
 DEFAULT_PATTERN_EMPTY = r"- Default: Empty string \(''\), since `None` is set as default\."
 PERSISTENCE_PATTERN = r"- Persistence: This environment variable is a `PersistentConfig` variable\."
-DESCRIPTION_PATTERN = r"- Description: (.+)$"
-ENUM_PATTERN = r"  - `([^`]+)`"
-OPTIONS_PATTERN = r"- Options:[\s\S]*?(?=\n\n|\n-)"
+DESCRIPTION_PATTERN = r"- Description: (.+?)(?=\n\n|\n-|$)"
+ENUM_PATTERN = r"  - `([^`]*)`(.*?)(?=\n  -|\n\n|\n-|$)"
+OPTIONS_PATTERN = r"- Options:([\s\S]*?)(?=\n\n|\n-|$)"
 
 # Hardcoded default templates
 DEFAULT_TEMPLATES = {
@@ -168,6 +168,41 @@ def load_existing_schema(file_path: str) -> Dict:
         logger.error(f"Error loading schema from {file_path}: {e}")
         raise
 
+def extract_options_from_section(section: str) -> tuple:
+    """
+    Extract options from a section and create enum values and descriptions.
+    
+    Args:
+        section: The section text containing options
+        
+    Returns:
+        A tuple containing (enum_values, options_description)
+    """
+    options_match = re.search(OPTIONS_PATTERN, section, re.DOTALL)
+    if not options_match:
+        return None, None
+    
+    options_text = options_match.group(1).strip()
+    enum_values = []
+    options_description = "Options:\n"
+    
+    # Find all enum patterns with their descriptions
+    enum_matches = re.finditer(ENUM_PATTERN, options_text, re.DOTALL)
+    for match in enum_matches:
+        enum_value = match.group(1)
+        enum_description = match.group(2).strip()
+        
+        # Add the enum value (even if it's empty)
+        enum_values.append(enum_value)
+        
+        # Add the description to the options description
+        if enum_value == "":
+            options_description += f"  - Empty string - {enum_description}\n"
+        else:
+            options_description += f"  - `{enum_value}` - {enum_description}\n"
+    
+    return enum_values, options_description
+
 def extract_variable_details(md_lines: List[str], var_name: str, line_number: int) -> Dict:
     """
     Extract detailed information for a variable from the Markdown content.
@@ -187,6 +222,7 @@ def extract_variable_details(md_lines: List[str], var_name: str, line_number: in
         "references_var": None,
         "description": "",
         "enum": None,
+        "options_description": None,
         "is_persistent_config": False,
         "sensitive": False
     }
@@ -257,7 +293,7 @@ def extract_variable_details(md_lines: List[str], var_name: str, line_number: in
                 details["default"] = default_value
     
     # Extract description
-    desc_match = re.search(DESCRIPTION_PATTERN, section, re.MULTILINE)
+    desc_match = re.search(DESCRIPTION_PATTERN, section, re.MULTILINE | re.DOTALL)
     if desc_match:
         details["description"] = desc_match.group(1).strip()
     
@@ -265,13 +301,15 @@ def extract_variable_details(md_lines: List[str], var_name: str, line_number: in
     if re.search(PERSISTENCE_PATTERN, section, re.MULTILINE):
         details["is_persistent_config"] = True
     
-    # Extract enum values if any
-    options_match = re.search(OPTIONS_PATTERN, section, re.DOTALL)
-    if options_match:
-        options_text = options_match.group(0)
-        enum_values = re.findall(ENUM_PATTERN, options_text)
-        if enum_values:
-            details["enum"] = enum_values
+    # Extract enum values and options description
+    enum_values, options_description = extract_options_from_section(section)
+    if enum_values:
+        details["enum"] = enum_values
+    if options_description:
+        details["options_description"] = options_description
+        # Append options description to main description if available
+        if details["description"] and options_description:
+            details["description"] = f"{details['description']}\n\n{options_description}"
     
     # Check if the variable is sensitive (contains words like "key", "password", "secret", "token")
     sensitive_keywords = ["key", "password", "secret", "token", "credentials"]
@@ -392,23 +430,30 @@ def save_tracking_data(tracking_data: Dict, output_file: str) -> None:
         logger.error(f"Error saving tracking data to {output_file}: {e}")
         raise
 
-def save_schema(schema: Dict, output_file: str) -> None:
+def save_schema(schema: Dict, output_file: str, full_schema: bool = False) -> None:
     """
     Save the updated schema to a JSON file.
     
     Args:
         schema: The updated schema
         output_file: Path to the output JSON file
+        full_schema: Whether to save the full schema or just the properties
     """
     try:
-        # Extract only the OpenWebUIConfig properties to create a standalone output
-        properties = schema["components"]["schemas"]["OpenWebUIConfig"]["properties"]
-        
-        # Create a properly formatted output
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(properties, f, indent=2, ensure_ascii=False)
-        
-        logger.info(f"Schema properties saved to {output_file}")
+        if full_schema:
+            # Save the full schema
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(schema, f, indent=2, ensure_ascii=False)
+            logger.info(f"Full schema saved to {output_file}")
+        else:
+            # Extract only the OpenWebUIConfig properties to create a standalone output
+            properties = schema["components"]["schemas"]["OpenWebUIConfig"]["properties"]
+            
+            # Create a properly formatted output
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(properties, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"Schema properties saved to {output_file}")
     except Exception as e:
         logger.error(f"Error saving schema to {output_file}: {e}")
         raise
@@ -420,7 +465,9 @@ def main():
     parser.add_argument('--markdown', '-m', default='env-configuration.md', help='Path to the Markdown file (default: env-configuration.md)')
     parser.add_argument('--schema', '-s', default='openwebui-config.json', help='Path to the existing schema JSON file (default: openwebui-config.json)')
     parser.add_argument('--output-schema', '-o', default='schema_properties.json', help='Path to the output properties JSON file (default: schema_properties.json)')
+    parser.add_argument('--output-full-schema', '-f', default='full_schema.json', help='Path to the output full schema JSON file (default: full_schema.json)')
     parser.add_argument('--output-tracking', default=None, help='Path to the output tracking JSON file (default: same as tracking file)')
+    parser.add_argument('--full-schema', action='store_true', help='Save the full schema instead of just the properties')
     args = parser.parse_args()
     
     try:
@@ -430,7 +477,11 @@ def main():
         
         updated_schema = update_schema(tracking_data, md_lines, existing_schema)
         
-        save_schema(updated_schema, args.output_schema)
+        # Save as properties or full schema based on flag
+        save_schema(updated_schema, args.output_schema, args.full_schema)
+        
+        # Always save the full schema to the specified file
+        save_schema(updated_schema, args.output_full_schema, True)
         
         if args.output_tracking:
             save_tracking_data(tracking_data, args.output_tracking)
@@ -441,7 +492,8 @@ def main():
         print(f"Schema generation completed successfully!")
         print(f"Processed {tracking_data.get('processed_count', 0)}/{tracking_data['total_count']} variables")
         print(f"Added {tracking_data.get('added_count', 0)} new variables, updated {tracking_data.get('updated_count', 0)} existing variables")
-        print(f"Properties saved to {args.output_schema} - ready to be copied into the original schema file")
+        print(f"Properties saved to {args.output_schema}")
+        print(f"Full schema saved to {args.output_full_schema}")
         
         # Calculate remaining variables
         remaining = tracking_data['total_count'] - tracking_data.get('processed_count', 0)

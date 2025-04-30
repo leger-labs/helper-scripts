@@ -28,7 +28,7 @@ DEFAULT_PATTERN = r"^- Default: `?([^`\n]+)`?"
 DEFAULT_PATTERN_EMPTY = r"^- Default: Empty string \('\'\), since `None` is set as default\."
 PERSISTENCE_PATTERN = r"^- Persistence: This environment variable is a `PersistentConfig` variable\."
 DESCRIPTION_PATTERN = r"^- Description: (.+)$"
-ENUM_PATTERN = r"^  - `([^`]+)`"
+ENUM_PATTERN = r"^  - `([^`]*)`(.*?)(?=\n  -|\n\n|\n-|$)"
 
 def extract_category(line: str) -> Optional[str]:
     """
