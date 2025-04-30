@@ -28,7 +28,6 @@ DEFAULT_PATTERN = r"- Default: `?([^`\n]+)`?"
 DEFAULT_PATTERN_EMPTY = r"- Default: Empty string \(''\), since `None` is set as default\."
 PERSISTENCE_PATTERN = r"- Persistence: This environment variable is a `PersistentConfig` variable\."
 DESCRIPTION_PATTERN = r"- Description: (.+?)(?=\n\n|\n-|$)"
-ENUM_PATTERN = r"  - `([^`]*)`(.*?)(?=\n  -|\n\n|\n-|$)"
 OPTIONS_PATTERN = r"- Options:([\s\S]*?)(?=\n\n|\n-|$)"
 
 # Hardcoded default templates
@@ -168,12 +167,13 @@ def load_existing_schema(file_path: str) -> Dict:
         logger.error(f"Error loading schema from {file_path}: {e}")
         raise
 
-def extract_options_from_section(section: str) -> tuple:
+def extract_options_from_section(section: str, var_name: str = None) -> tuple:
     """
     Extract options from a section and create enum values and descriptions.
     
     Args:
         section: The section text containing options
+        var_name: Optional variable name for debugging
         
     Returns:
         A tuple containing (enum_values, options_description)
@@ -186,22 +186,81 @@ def extract_options_from_section(section: str) -> tuple:
     enum_values = []
     options_description = "Options:\n"
     
-    # Find all enum patterns with their descriptions
-    enum_matches = re.finditer(ENUM_PATTERN, options_text, re.DOTALL)
-    for match in enum_matches:
-        enum_value = match.group(1)
-        enum_description = match.group(2).strip()
-        
-        # Add the enum value (even if it's empty)
-        enum_values.append(enum_value)
-        
-        # Add the description to the options description
-        if enum_value == "":
-            options_description += f"  - Empty string - {enum_description}\n"
-        else:
-            options_description += f"  - `{enum_value}` - {enum_description}\n"
+    # Special case handling for known variables with formatting issues
+    if var_name == "ENV":
+        # Manual extraction for ENV which we know has specific formatting issues
+        enum_values = ["dev", "prod"]
+        options_description = "Options:\n  - `dev` - Enables the FastAPI API documentation on `/docs`\n  - `prod` - Automatically configures several environment variables\n"
+        return enum_values, options_description
     
-    return enum_values, options_description
+    # Try multiple patterns to capture different formatting styles
+    
+    # First pattern: standard format with backticks and dash (with description)
+    pattern1 = r"\s*[-*]\s+`([^`]*)`\s*-\s*(.*?)(?=\n\s*[-*]|\n\n|\n-|$)"
+    
+    # Second pattern: for empty string option that might be formatted differently
+    pattern2 = r"\s*[-*]\s+Empty string\s*[-\(]?\s*(.*?)(?=\n\s*[-*]|\n\n|\n-|$)"
+    
+    # Third pattern: another format that might be used
+    pattern3 = r"\s*[-*]\s+['\"](.*?)['\"]\s*-\s*(.*?)(?=\n\s*[-*]|\n\n|\n-|$)"
+    
+    # Fourth pattern: for options listed with backticks but no description
+    # This handles cases like `RAG_TEXT_SPLITTER` where options are just listed with backticks
+    pattern4 = r"\s*[-*]\s+`([^`]+)`\s*(?=\n|$)"
+    
+    # Combine patterns for better matching
+    all_patterns = [pattern1, pattern2, pattern3, pattern4]
+    
+    for pattern in all_patterns:
+        matches = list(re.finditer(pattern, options_text, re.DOTALL))
+        
+        for match in matches:
+            if pattern == pattern1:  # Standard backtick format with description
+                enum_value = match.group(1)
+                enum_description = match.group(2).strip()
+            elif pattern == pattern2:  # Empty string description
+                enum_value = ""
+                enum_description = match.group(1).strip()
+            elif pattern == pattern3:  # Quote format
+                enum_value = match.group(1)
+                enum_description = match.group(2).strip()
+            elif pattern == pattern4:  # Backticks without description
+                enum_value = match.group(1)
+                enum_description = ""  # No description provided
+            
+            # Check if this value is already in our list
+            if enum_value not in enum_values:
+                enum_values.append(enum_value)
+                
+                # Add the description to the options description
+                if enum_value == "":
+                    options_description += f"  - Empty string - {enum_description}\n"
+                elif enum_description:
+                    options_description += f"  - `{enum_value}` - {enum_description}\n"
+                else:
+                    options_description += f"  - `{enum_value}`\n"
+    
+    # Special case for WEB_LOADER_ENGINE - ensure empty string option is captured
+    if var_name == "WEB_LOADER_ENGINE":
+        # Check if we already have the empty string
+        if not any(v == "" for v in enum_values):
+            # Look for the empty string option specifically in the text
+            empty_match = re.search(r"['\"]{2}|``\s*-\s*(.*?)(?=\n|$)", options_text, re.DOTALL)
+            if empty_match:
+                enum_values.insert(0, "")
+                empty_desc = empty_match.group(1).strip() if len(empty_match.groups()) > 0 else "Uses the `requests` module with enhanced error handling."
+                options_description = "Options:\n  - Empty string - " + empty_desc + "\n"
+                
+                # Add back the other options
+                for i, v in enumerate(enum_values):
+                    if v != "":
+                        options_description += f"  - `{v}` - "
+                        # Find the existing description for this value
+                        desc_match = re.search(f"`{v}`\\s*-\\s*(.*?)(?=\\n\\s*[-*]|\\n\\n|\\n-|$)", section, re.DOTALL)
+                        if desc_match:
+                            options_description += f"{desc_match.group(1).strip()}\n"
+    
+    return (enum_values, options_description) if enum_values else (None, None)
 
 def extract_variable_details(md_lines: List[str], var_name: str, line_number: int) -> Dict:
     """
@@ -302,7 +361,7 @@ def extract_variable_details(md_lines: List[str], var_name: str, line_number: in
         details["is_persistent_config"] = True
     
     # Extract enum values and options description
-    enum_values, options_description = extract_options_from_section(section)
+    enum_values, options_description = extract_options_from_section(section, var_name)
     if enum_values:
         details["enum"] = enum_values
     if options_description:
