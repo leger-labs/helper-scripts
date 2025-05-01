@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenWebUI Environment Variable Classifier for Leger</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.5;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        select {
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .export-btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .export-btn:hover {
+            background-color: #45a049;
+        }
+        .bulk-actions {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .bulk-actions h3 {
+            margin-top: 0;
+        }
+        .bulk-action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .bulk-btn {
+            padding: 6px 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .bulk-btn:hover {
+            background-color: #0b7dda;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .checkbox-cell {
+            text-align: center;
+        }
+        .checkbox-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .checkbox-label {
+            margin-left: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .hidden-row {
+            display: none;
+        }
+        .variable-name {
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        .page-btn {
+            padding: 6px 12px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .page-btn.active {
+            background-color: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        .count-summary {
+            margin: 20px 0;
+            text-align: center;
+            font-size: 16px;
+            background-color: #e8f4fd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .description-cell {
+            max-width: 400px;
+        }
+        .rationale-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+        }
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>OpenWebUI Environment Variable Classifier for Leger</h1>
+    
+    <div id="loadingMessage" class="loading">Loading variables from variables.json...</div>
+    <div id="errorMessage" class="error" style="display: none;"></div>
+    
+    <div id="mainContent" style="display: none;">
+        <div class="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search variables...">
+            </div>
+            <div class="category-filter">
+                <label for="categoryFilter">Category:</label>
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <!-- Categories will be added dynamically -->
+                </select>
+            </div>
+            <button id="exportBtn" class="export-btn">Export Classifications</button>
+        </div>
+        
+        <div class="count-summary">
+            <span id="exposedCount">0</span> exposed / <span id="totalCount">0</span> total variables
+        </div>
+
+        <div class="bulk-actions">
+            <h3>Bulk Actions</h3>
+            <p>Apply settings to all currently filtered variables:</p>
+            <div class="bulk-action-btns">
+                <button class="bulk-btn" id="bulkExposed">Set All to Exposed</button>
+                <button class="bulk-btn" id="bulkHidden">Set All to Hidden</button>
+                <button class="bulk-btn" id="bulkPreloaded">Set All to Preloaded</button>
+                <button class="bulk-btn" id="bulkUnset">Set All to Unset</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">Order</th>
+                        <th style="width: 20%;">Variable</th>
+                        <th style="width: 15%;">Category</th>
+                        <th style="width: 10%;" class="checkbox-cell">Visibility<br><small>(check = Exposed)</small></th>
+                        <th style="width: 10%;" class="checkbox-cell">Default Handling<br><small>(check = Preloaded)</small></th>
+                        <th style="width: 40%;">Rationale</th>
+                    </tr>
+                </thead>
+                <tbody id="variablesTable">
+                    <!-- Table rows will be added dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination buttons will be added dynamically -->
+        </div>
+    </div>
+
+    <script>
+        // Main data object for the application
+        let variablesData = {};
+        
+        // Keep track of the classification state
+        let classification = {};
+        
+        // Pagination settings
+        const PAGE_SIZE = 50;
+        let currentPage = 1;
+        let filteredVariables = [];
+        
+        // Initialize the application
+        function init() {
+            loadVariablesData()
+                .then(() => {
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    setupEventListeners();
+                    inferCategories();
+                    populateCategoryFilter();
+                    updateTable();
+                    updateCountSummary();
+                })
+                .catch(error => {
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = `Error loading variables.json: ${error.message}`;
+                    errorMessage.style.display = 'block';
+                    console.error('Error loading variables:', error);
+                });
+        }
+
+        // Load variable data from the external JSON file
+        async function loadVariablesData() {
+            try {
+                const response = await fetch('variables.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                variablesData = data;
+                
+                // Initialize classification object
+                Object.keys(variablesData).forEach(varName => {
+                    classification[varName] = {
+                        "visibility": "hidden", // Default to hidden (not checked)
+                        "default_handling": "preloaded", // Default to preloaded (checked)
+                        "rationale": ""
+                    };
+                });
+            } catch (error) {
+                console.error('Error loading variables.json:', error);
+                throw error;
+            }
+        }
+        
+        // Infer categories based on variable names and patterns
+        function inferCategories() {
+            Object.keys(variablesData).forEach(varName => {
+                if (!variablesData[varName].category) {
+                    variablesData[varName].category = inferCategoryForVariable(varName);
+                }
+            });
+        }
+        
+        // Infer category for a specific variable based on its name
+        function inferCategoryForVariable(varName) {
+            // Security variables
+            if (varName.startsWith('WEBUI_AUTH') || 
+                varName.startsWith('WEBUI_SECRET') || 
+                varName.includes('_SSL_') || 
+                varName.includes('CORS_') ||
+                varName.includes('SAFE_MODE') ||
+                varName.includes('_SECURITY_')) {
+                return "Security Variables";
+            }
+            
+            // Vector database variables
+            if (varName.startsWith('VECTOR_DB') || 
+                varName.startsWith('CHROMA_') || 
+                varName.startsWith('ELASTICSEARCH_') ||
+                varName.startsWith('MILVUS_') ||
+                varName.startsWith('OPENSEARCH_') ||
+                varName.startsWith('PGVECTOR_') ||
+                varName.startsWith('QDRANT_') ||
+                varName.startsWith('PINECONE_')) {
+                return "Vector Database";
+            }
+            
+            // RAG variables
+            if (varName.startsWith('RAG_') ||
+                varName.startsWith('CHUNK_') ||
+                varName.startsWith('PDF_EXTRACT_') ||
+                varName.startsWith('TIKTOKEN_')) {
+                return "Retrieval Augmented Generation (RAG)";
+            }
+            
+            // Content extraction
+            if (varName.startsWith('CONTENT_EXTRACTION_') ||
+                varName.startsWith('TIKA_') ||
+                varName.startsWith('DOCLING_') ||
+                varName.startsWith('MISTRAL_OCR_')) {
+                return "RAG Content Extraction Engine";
+            }
+            
+            // Web search
+            if (varName.startsWith('WEB_SEARCH_') ||
+                varName.startsWith('SEARXNG_') ||
+                varName.startsWith('BRAVE_SEARCH_') ||
+                varName.startsWith('KAGI_') ||
+                varName.startsWith('BING_SEARCH_') ||
+                varName.includes('SEARCH_API_') ||
+                varName.startsWith('TAVILY_')) {
+                return "Web Search";
+            }
+            
+            // Audio
+            if (varName.startsWith('AUDIO_') ||
+                varName.startsWith('WHISPER_') ||
+                varName.startsWith('DEEPGRAM_')) {
+                return "Audio";
+            }
+            
+            // Image generation
+            if (varName.startsWith('IMAGE_') ||
+                varName.startsWith('AUTOMATIC1111_') ||
+                varName.startsWith('COMFYUI_') ||
+                varName.startsWith('IMAGES_')) {
+                return "Image Generation";
+            }
+            
+            // OAuth
+            if (varName.startsWith('OAUTH_') ||
+                varName.startsWith('GOOGLE_CLIENT_') ||
+                varName.startsWith('MICROSOFT_CLIENT_') ||
+                varName.startsWith('GITHUB_CLIENT_') ||
+                varName.startsWith('OPENID_')) {
+                return "OAuth";
+            }
+            
+            // LDAP
+            if (varName.startsWith('LDAP_') ||
+                varName.startsWith('ENABLE_LDAP')) {
+                return "LDAP";
+            }
+            
+            // User permissions
+            if (varName.startsWith('USER_PERMISSIONS_')) {
+                return "User Permissions";
+            }
+            
+            // Storage
+            if (varName.startsWith('STORAGE_') ||
+                varName.startsWith('S3_') ||
+                varName.startsWith('GCS_') ||
+                varName.startsWith('AZURE_STORAGE_')) {
+                return "Misc Environment Variables";
+            }
+            
+            // Database
+            if (varName.startsWith('DATABASE_') ||
+                varName.startsWith('REDIS_')) {
+                return "Misc Environment Variables";
+            }
+            
+            // Default to App/Backend
+            return "App/Backend";
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', function() {
+                currentPage = 1;
+                updateTable();
+            });
+            
+            // Category filter
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                currentPage = 1;
+                updateTable();
+            });
+            
+            // Export button
+            document.getElementById('exportBtn').addEventListener('click', exportClassifications);
+            
+            // Bulk action buttons
+            document.getElementById('bulkExposed').addEventListener('click', () => bulkUpdate('visibility', 'exposed'));
+            document.getElementById('bulkHidden').addEventListener('click', () => bulkUpdate('visibility', 'hidden'));
+            document.getElementById('bulkPreloaded').addEventListener('click', () => bulkUpdate('default_handling', 'preloaded'));
+            document.getElementById('bulkUnset').addEventListener('click', () => bulkUpdate('default_handling', 'unset'));
+        }
+
+        // Populate the category filter dropdown
+        function populateCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categories = new Set();
+            
+            // Extract unique categories
+            Object.values(variablesData).forEach(varData => {
+                if (varData.category) {
+                    categories.add(varData.category);
+                }
+            });
+            
+            // Add options to the dropdown
+            [...categories].sort().forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Update the table based on current filters
+        function updateTable() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            
+            // Filter variables based on search and category
+            filteredVariables = Object.keys(variablesData)
+                .filter(varName => {
+                    const varData = variablesData[varName];
+                    const matchesSearch = varName.toLowerCase().includes(searchQuery);
+                    const matchesCategory = categoryFilter === 'all' || varData.category === categoryFilter;
+                    return matchesSearch && matchesCategory;
+                })
+                .sort((a, b) => variablesData[a].order - variablesData[b].order);
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredVariables.length / PAGE_SIZE);
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const end = start + PAGE_SIZE;
+            const pageVariables = filteredVariables.slice(start, end);
+            
+            // Generate table rows
+            const tableBody = document.getElementById('variablesTable');
+            tableBody.innerHTML = '';
+            
+            pageVariables.forEach(varName => {
+                const varData = variablesData[varName];
+                const row = document.createElement('tr');
+                
+                // Order cell
+                const orderCell = document.createElement('td');
+                orderCell.textContent = varData.order;
+                row.appendChild(orderCell);
+                
+                // Variable name cell
+                const nameCell = document.createElement('td');
+                nameCell.innerHTML = `<span class="variable-name">${varName}</span>`;
+                row.appendChild(nameCell);
+                
+                // Category cell
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = varData.category || '';
+                row.appendChild(categoryCell);
+                
+                // Visibility cell (checkbox)
+                const visibilityCell = document.createElement('td');
+                visibilityCell.className = 'checkbox-cell';
+                const visibilityCheckbox = document.createElement('input');
+                visibilityCheckbox.type = 'checkbox';
+                visibilityCheckbox.className = 'form-check-input visibility-checkbox';
+                visibilityCheckbox.dataset.var = varName;
+                visibilityCheckbox.checked = classification[varName].visibility === 'exposed';
+                visibilityCell.appendChild(visibilityCheckbox);
+                row.appendChild(visibilityCell);
+                
+                // Default handling cell (checkbox)
+                const handlingCell = document.createElement('td');
+                handlingCell.className = 'checkbox-cell';
+                const handlingCheckbox = document.createElement('input');
+                handlingCheckbox.type = 'checkbox';
+                handlingCheckbox.className = 'form-check-input handling-checkbox';
+                handlingCheckbox.dataset.var = varName;
+                handlingCheckbox.checked = classification[varName].default_handling === 'preloaded';
+                handlingCell.appendChild(handlingCheckbox);
+                row.appendChild(handlingCell);
+                
+                // Rationale cell
+                const rationaleCell = document.createElement('td');
+                const rationaleInput = document.createElement('textarea');
+                rationaleInput.className = 'rationale-input';
+                rationaleInput.dataset.var = varName;
+                rationaleInput.placeholder = 'Enter rationale...';
+                rationaleInput.value = classification[varName].rationale || '';
+                rationaleCell.appendChild(rationaleInput);
+                row.appendChild(rationaleCell);
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners for checkboxes and textareas
+            document.querySelectorAll('.visibility-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const varName = this.dataset.var;
+                    classification[varName].visibility = this.checked ? 'exposed' : 'hidden';
+                    updateCountSummary();
+                });
+            });
+            
+            document.querySelectorAll('.handling-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const varName = this.dataset.var;
+                    classification[varName].default_handling = this.checked ? 'preloaded' : 'unset';
+                });
+            });
+            
+            document.querySelectorAll('.rationale-input').forEach(textarea => {
+                textarea.addEventListener('change', function() {
+                    const varName = this.dataset.var;
+                    classification[varName].rationale = this.value;
+                });
+            });
+            
+            // Update pagination
+            updatePagination(totalPages);
+        }
+
+        // Update pagination controls
+        function updatePagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.textContent = '< Prev';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTable();
+                }
+            });
+            pagination.appendChild(prevBtn);
+            
+            // Page buttons
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    updateTable();
+                });
+                pagination.appendChild(pageBtn);
+            }
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.textContent = 'Next >';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateTable();
+                }
+            });
+            pagination.appendChild(nextBtn);
+        }
+
+        // Update count summary
+        function updateCountSummary() {
+            const exposedCount = Object.values(classification).filter(c => c.visibility === 'exposed').length;
+            const totalCount = Object.keys(classification).length;
+            
+            document.getElementById('exposedCount').textContent = exposedCount;
+            document.getElementById('totalCount').textContent = totalCount;
+        }
+
+        // Bulk update classification values
+        function bulkUpdate(property, value) {
+            filteredVariables.forEach(varName => {
+                classification[varName][property] = value;
+            });
+            updateTable();
+            updateCountSummary();
+        }
+
+        // Export classifications as JSON
+        function exportClassifications() {
+            const output = {
+                "variable_classifications": {}
+            };
+            
+            Object.keys(classification).forEach(varName => {
+                output.variable_classifications[varName] = {
+                    "visibility": classification[varName].visibility,
+                    "default_handling": classification[varName].default_handling,
+                    "rationale": classification[varName].rationale
+                };
+            });
+            
+            const jsonStr = JSON.stringify(output, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'leger_openwebui_var_classifications.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Initialize the app when the document is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
