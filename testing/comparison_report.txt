@@ -1,0 +1,67 @@
+Found 16 new variables that need manual annotation:
+1. DEFAULT_PROMPT_SUGGESTIONS
+   Description: List of prompt suggestions. The format for prompt suggestions are:
+   Default value: []
+
+2. DOCLING_OCR_ENGINE
+   Description: Specifies the OCR engine used by Docling.
+   Default value: tesseract
+
+3. DOCLING_OCR_LANG
+   Description: Specifies the OCR language(s) to be used with the configured `DOCLING_OCR_ENGINE`.
+   Default value: eng,fra,deu,spa
+
+4. ENABLE_QDRANT_MULTITENANCY_MODE
+   Description: Enables multitenancy pattern for Qdrant collections management, which significantly reduces RAM usage and computational overhead by consolidating similar vector data structures. Recommend turn on
+   Default value: False
+
+5. LDAP_VALIDATE_CERT
+   Description: Sets whether to validate the LDAP CA certificate.
+   Default value: No default value
+
+6. MILVUS_HNSW_EFCONSTRUCTION
+   Description: Specifies the `efConstruction` parameter for the HNSW index type in Milvus. This influences the size of the dynamic list for the nearest neighbors during index construction. Only applicable if `MILVUS_INDEX_TYPE` is `HNSW`.
+   Default value: 100
+
+7. MILVUS_HNSW_M
+   Description: Specifies the `M` parameter for the HNSW index type in Milvus. This influences the number of bi-directional links created for each new element during construction. Only applicable if `MILVUS_INDEX_TYPE` is `HNSW`.
+   Default value: 16
+
+8. MILVUS_INDEX_TYPE
+   Description: Specifies the index type to use when creating a new collection in Milvus. `AUTOINDEX` is generally recommended for Milvus standalone. `HNSW` may offer better performance but typically requires a clustered Milvus setup.
+   Default value: HNSW
+
+9. MILVUS_IVF_FLAT_NLIST
+   Description: Specifies the `nlist` parameter for the IVF_FLAT index type in Milvus. This is the number of cluster units. Only applicable if `MILVUS_INDEX_TYPE` is `IVF_FLAT`.
+   Default value: 128
+
+10. MILVUS_METRIC_TYPE
+   Description: Specifies the metric type for vector similarity search in Milvus.
+   Default value: COSINE
+
+11. OAUTH_UPDATE_PICTURE_ON_LOGIN
+   Description: If enabled, updates the local user profile picture with the OAuth-provided picture on login.
+   Default value: False
+
+12. PENDING_USER_OVERLAY_CONTENT
+   Description: Sets a custom text content for the pending user overlay.
+   Default value: Empty string (' ')
+
+13. PENDING_USER_OVERLAY_TITLE
+   Description: Sets a custom title for the pending user overlay.
+   Default value: Empty string (' ')
+
+14. RESPONSE_WATERMARK
+   Description: Sets a custom text that will be included when you copy a message in the chat. E.g. `"This text is AI generated"` -> will add "This text is AI generated" to every message, when copied.
+   Default value: Empty string (' ')
+
+15. S3_ENABLE_TAGGING
+   Description: Enables S3 object tagging after uploads for better organization, searching, and integration with file management policies. Always set to `False` when using Cloudflare R2, as R2 does not support object tagging.
+   Default value: False
+
+16. WHISPER_LANGUAGE
+   Description: Specifies the ISO 639-1 language Whisper uses for STT (ISO 639-2 for Hawaiian and Cantonese). Whisper predicts the language by default.
+   Default value: None
+
+
+No variables found in classifications that aren't in the OpenAPI spec.
