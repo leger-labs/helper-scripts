@@ -13,7 +13,7 @@ As new variables are introduced, this page will be updated to reflect the growin
 
 :::info
 
-This page is up-to-date with Open WebUI release version [v0.6.5](https://github.com/open-webui/open-webui/releases/tag/v0.6.5), but is still a work in progress to later include more accurate descriptions, listing out options available for environment variables, defaults, and improving descriptions.
+This page is up-to-date with Open WebUI release version [v0.6.9](https://github.com/open-webui/open-webui/releases/tag/v0.6.9), but is still a work in progress to later include more accurate descriptions, listing out options available for environment variables, defaults, and improving descriptions.
 
 :::
 
@@ -236,7 +236,7 @@ This will run the Open WebUI on port `9999`. The `PORT` environment variable is 
 - Description: List of banners to show to users. The format for banners are:
 
 ```json
-[{"id": "string","type": "string [info, success, warning, error]","title": "string","content": "string","dismissible": False,"timestamp": 1000}]
+[{"id": "string", "type": "string [info, success, warning, error]", "title": "string", "content": "string", "dismissible": false, "timestamp": 1000}]
 ```
 
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -255,8 +255,7 @@ WEBUI_BANNERS="[{\"id\": \"1\", \"type\": \"warning\", \"title\": \"Your message
 
 - Type: `bool`
 - Default: `False`
-- Description: Builds the Docker image with NVIDIA CUDA support. Enables GPU acceleration
-for local Whisper and embeddings.
+- Description: Builds the Docker image with NVIDIA CUDA support. Enables GPU acceleration for local Whisper and embeddings.
 
 #### `EXTERNAL_PWA_MANIFEST_URL`
 
@@ -450,30 +449,7 @@ when using OpenAI-compatible endpoints.
 - Description: Prompt to use when generating chat titles.
 - Default: The value of `DEFAULT_TITLE_GENERATION_PROMPT_TEMPLATE` environment variable.
 
-`DEFAULT_TITLE_GENERATION_PROMPT_TEMPLATE`:
 
-```
-### Task:
-Generate a concise, 3-5 word title with an emoji summarizing the chat history.
-### Guidelines:
-- The title should clearly represent the main theme or subject of the conversation.
-- Use emojis that enhance understanding of the topic, but avoid quotation marks or special formatting.
-- Write the title in the chat's primary language; default to English if multilingual.
-- Prioritize accuracy over excessive creativity; keep it clear and simple.
-### Output:
-JSON format: { "title": "your concise title here" }
-### Examples:
-- { "title": "📉 Stock Market Trends" },
-- { "title": "🍪 Perfect Chocolate Chip Recipe" },
-- { "title": "Evolution of Music Streaming" },
-- { "title": "Remote Work Productivity Tips" },
-- { "title": "Artificial Intelligence in Healthcare" },
-- { "title": "🎮 Video Game Development Insights" }
-### Chat History:
-<chat_history>
-{{MESSAGES:END:2}}
-</chat_history>
-```
 
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
@@ -483,32 +459,7 @@ JSON format: { "title": "your concise title here" }
 - Description: Prompt to use when calling tools.
 - Default: The value of `DEFAULT_TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE` environment variable.
 
-`DEFAULT_TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE`:
 
-```
-Available Tools: {{TOOLS}}
-
-Your task is to choose and return the correct tool(s) from the list of available tools based on the query. Follow these guidelines:
-
-- Return only the JSON object, without any additional text or explanation.
-
-- If no tools match the query, return an empty array: 
-   {
-     "tool_calls": []
-   }
-
-- If one or more tools match the query, construct a JSON response containing a "tool_calls" array with objects that include:
-   - "name": The tool's name.
-   - "parameters": A dictionary of required parameters and their corresponding values.
-
-The format for the JSON response is strictly:
-{
-  "tool_calls": [
-    {"name": "toolName1", "parameters": {"key1": "value1"}},
-    {"name": "toolName2", "parameters": {"key2": "value2"}}
-  ]
-}
-```
 
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
@@ -657,50 +608,7 @@ When enabling `ENABLE_AUTOCOMPLETE_GENERATION`, ensure that you also configure `
 - Type: `str`
 - Default: The value of the `DEFAULT_AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE` environment variable.
 
-`DEFAULT_AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE`:
 
-```
-### Task:
-You are an autocompletion system. Continue the text in `<text>` based on the **completion type** in `<type>` and the given language.  
-
-### **Instructions**:
-1. Analyze `<text>` for context and meaning.  
-2. Use `<type>` to guide your output:  
-   - **General**: Provide a natural, concise continuation.  
-   - **Search Query**: Complete as if generating a realistic search query.  
-3. Start as if you are directly continuing `<text>`. Do **not** repeat, paraphrase, or respond as a model. Simply complete the text.  
-4. Ensure the continuation:
-   - Flows naturally from `<text>`.  
-   - Avoids repetition, overexplaining, or unrelated ideas.  
-5. If unsure, return: `{ "text": "" }`.  
-
-### **Output Rules**:
-- Respond only in JSON format: `{ "text": "<your_completion>" }`.
-
-### **Examples**:
-#### Example 1:  
-Input:  
-<type>General</type>  
-<text>The sun was setting over the horizon, painting the sky</text>  
-Output:  
-{ "text": "with vibrant shades of orange and pink." }
-
-#### Example 2:  
-Input:  
-<type>Search Query</type>  
-<text>Top-rated restaurants in</text>  
-Output:  
-{ "text": "New York City for Italian cuisine." }  
-
----
-### Context:
-<chat_history>
-{{MESSAGES:END:6}}
-</chat_history>
-<type>{{TYPE}}</type>  
-<text>{{PROMPT}}</text>  
-#### Output:
-```
 
 - Description: Sets the prompt template for autocomplete generation.
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -742,27 +650,7 @@ Output:
 - Type: `str`
 - Default: The value of `DEFAULT_TAGS_GENERATION_PROMPT_TEMPLATE` environment variable.
 
-`DEFAULT_TAGS_GENERATION_PROMPT_TEMPLATE`:
 
-```
-### Task:
-Generate 1-3 broad tags categorizing the main themes of the chat history, along with 1-3 more specific subtopic tags.
-
-### Guidelines:
-- Start with high-level domains (e.g. Science, Technology, Philosophy, Arts, Politics, Business, Health, Sports, Entertainment, Education)
-- Consider including relevant subfields/subdomains if they are strongly represented throughout the conversation
-- If content is too short (less than 3 messages) or too diverse, use only ["General"]
-- Use the chat's primary language; default to English if multilingual
-- Prioritize accuracy over specificity
-
-### Output:
-JSON format: { "tags": ["tag1", "tag2", "tag3"] }
-
-### Chat History:
-<chat_history>
-{{MESSAGES:END:6}}
-</chat_history>
-```
 
 - Description: Sets the prompt template for tag generation.
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -1210,7 +1098,19 @@ modeling files for reranking.
 
 This will disconect all Qdrant collections created in the previous pattern, which is non-multitenancy. Go to  `Admin Settings` > `Documents` > `Reindex Knowledge Base` to migrate existing knowledges.
 
-The Qdrant collections created in the previous pattern will still take resources. Therefore, when you decided to use multitenancy pattern as your default, go to `Admin Settings` > `Documents` to reset Qdrant, which will delete all collections with `open_webui` prefix and then do the Reindex Knowledge Base.
+The Qdrant collections created in the previous pattern will still take resources.
+
+Currently, there is no button on the UI for only reset vector DB, if you want to migrate knowledges to multitenancy:
+- Remove all collections with `open_webui-knowledge` prefix (or `open_webui` prefix to remove all collections related to Open WebUI) with native Qdrant Client
+- Go to  `Admin Settings` > `Documents` > `Reindex Knowledge Base` to migrate existing knowledges
+
+`Reindex Knowledge Base` will ONLY migrate knowledges
+
+:::
+
+:::danger
+
+When you decided to use multitenancy pattern as your default and you don't need to migrate old knowledge, go to `Admin Settings` > `Documents` to reset vector and knowledge, which will delete all collections with `open_webui` prefix and knowledges.
 
 :::
 
@@ -1263,6 +1163,7 @@ When using Pinecone as the vector store, the following environment variables are
 - Type: `str`
 - Options:
   - Leave empty to use default
+  - `external` - Use external loader
   - `tika` - Use a local Apache Tika server
   - `docling` - Use Docling engine
   - `document_intelligence` - Use Document Intelligence engine
@@ -1275,6 +1176,20 @@ When using Pinecone as the vector store, the following environment variables are
 - Type: `str`
 - Default: `None`
 - Description: Specifies the Mistral OCR API key to use.
+- Persistence: This environment variable is a `PersistentConfig` variable.
+
+#### `EXTERNAL_DOCUMENT_LOADER_URL`
+
+- Type: `str`
+- Default: `None`
+- Description: Sets the URL for the external document loader service.
+- Persistence: This environment variable is a `PersistentConfig` variable.
+
+#### `EXTERNAL_DOCUMENT_LOADER_API_KEY`
+
+- Type: `str`
+- Default: `None`
+- Description: Sets the API key for authenticating with the external document loader service.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `TIKA_SERVER_URL`
@@ -1360,38 +1275,7 @@ When using Pinecone as the vector store, the following environment variables are
 - Type: `str`
 - Default: The value of `DEFAULT_RAG_TEMPLATE` environment variable.
 
-`DEFAULT_RAG_TEMPLATE`:
 
-```
-### Task:
-Respond to the user query using the provided context, incorporating inline citations in the format [id] **only when the <source> tag includes an explicit id attribute** (e.g., <source id="1">).
-
-### Guidelines:
-- If you don't know the answer, clearly state that.
-- If uncertain, ask the user for clarification.
-- Respond in the same language as the user's query.
-- If the context is unreadable or of poor quality, inform the user and provide the best possible answer.
-- If the answer isn't present in the context but you possess the knowledge, explain this to the user and provide the answer using your own understanding.
-- **Only include inline citations using [id] (e.g., [1], [2]) when the <source> tag includes an id attribute.**
-- Do not cite if the <source> tag does not contain an id attribute.
-- Do not use XML tags in your response.
-- Ensure citations are concise and directly related to the information provided.
-
-### Example of Citation:
-If the user asks about a specific topic and the information is found in a source with a provided id attribute, the response should include the citation like in the following example:
-* "According to the study, the proposed method increases efficiency by 20% [1]."
-
-### Output:
-Provide a clear and direct response to the user's query, including inline citations in the format [id] only when the <source> tag with id attribute is present in the context.
-
-<context>
-{{CONTEXT}}
-</context>
-
-<user_query>
-{{QUERY}}
-</user_query>
-```
 
 - Description: Template to use when injecting RAG documents into chat completion
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -1458,6 +1342,18 @@ When configuring `RAG_FILE_MAX_SIZE` and `RAG_FILE_MAX_COUNT`, ensure that the v
 
 :::
 
+#### `RAG_ALLOWED_FILE_EXTENSIONS`
+
+- Type: `list` of `str`
+- Default: `[]` (which means all supported file types are allowed)
+- Description: Specifies which file extensions are permitted for upload. 
+
+```json
+["pdf,docx,txt"]
+```
+
+- Persistence: This environment variable is a `PersistentConfig` variable.
+
 #### `RAG_RERANKING_MODEL`
 
 - Type: `str`
@@ -1515,32 +1411,7 @@ When configuring `RAG_FILE_MAX_SIZE` and `RAG_FILE_MAX_COUNT`, ensure that the v
 - Type: `str`
 - Default: The value of `DEFAULT_QUERY_GENERATION_PROMPT_TEMPLATE` environment variable.
 
-`DEFAULT_QUERY_GENERATION_PROMPT_TEMPLATE`:
 
-```
-### Task:
-Analyze the chat history to determine the necessity of generating search queries, in the given language. By default, **prioritize generating 1-3 broad and relevant search queries** unless it is absolutely certain that no additional information is required. The aim is to retrieve comprehensive, updated, and valuable information even with minimal uncertainty. If no search is unequivocally needed, return an empty list.
-
-### Guidelines:
-- Respond **EXCLUSIVELY** with a JSON object. Any form of extra commentary, explanation, or additional text is strictly prohibited.
-- When generating search queries, respond in the format: { "queries": ["query1", "query2"] }, ensuring each query is distinct, concise, and relevant to the topic.
-- If and only if it is entirely certain that no useful results can be retrieved by a search, return: { "queries": [] }.
-- Err on the side of suggesting search queries if there is **any chance** they might provide useful or updated information.
-- Be concise and focused on composing high-quality search queries, avoiding unnecessary elaboration, commentary, or assumptions.
-- Today's date is: {{CURRENT_DATE}}.
-- Always prioritize providing actionable and broad queries that maximize informational coverage.
-
-### Output:
-Strictly return in JSON format: 
-{
-  "queries": ["query1", "query2"]
-}
-
-### Chat History:
-<chat_history>
-{{MESSAGES:END:6}}
-</chat_history>
-```
 
 - Description: Sets the prompt template for query generation.
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -1575,21 +1446,21 @@ Strictly return in JSON format:
 
 #### `RAG_EMBEDDING_CONTENT_PREFIX`
 
-- Type: 
+- Type: `str`
 - Default: `None`
 - Description: Specifies the prefix for the RAG embedding content.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `RAG_EMBEDDING_PREFIX_FIELD_NAME`
 
-- Type: 
+- Type: `str`
 - Default: `None`
 - Description: Specifies the field name for the RAG embedding prefix.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `RAG_EMBEDDING_QUERY_PREFIX`
 
-- Type: 
+- Type: `str`
 - Default: `None`
 - Description: Specifies the prefix for the RAG embedding query.
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -1650,7 +1521,7 @@ When enabling `GOOGLE_DRIVE_INTEGRATION`, ensure that you have configured `GOOGL
 
 - Type: `bool`
 - Default: `False`
-- Description: Enable web search toggle
+- Description: Enable web search toggle.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `ENABLE_SEARCH_QUERY_GENERATION`
@@ -1868,7 +1739,7 @@ the search query. Example: `http://searxng.local/search?q=<query>`
 - Default: `safe_web`
 - Description: Specifies the loader to use for retrieving and processing web content.
 - Options:
-  - '' - Uses the `requests` module with enhanced error handling.
+  - `requests` - Uses the Requests module with enhanced error handling.
   - `playwright` - Uses Playwright for more advanced web page rendering and interaction.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
@@ -2150,29 +2021,7 @@ Using a remote Playwright browser via `PLAYWRIGHT_WS_URL` can be beneficial for:
 - Description: Specifies the template to use for generating image prompts.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
-`DEFAULT_IMAGE_PROMPT_GENERATION_PROMPT_TEMPLATE`:
 
-```
-### Task:
-Generate a detailed prompt for am image generation task based on the given language and context. Describe the image as if you were explaining it to someone who cannot see it. Include relevant details, colors, shapes, and any other important elements.
-
-### Guidelines:
-- Be descriptive and detailed, focusing on the most important aspects of the image.
-- Avoid making assumptions or adding information not present in the image.
-- Use the chat's primary language; default to English if multilingual.
-- If the image is too complex, focus on the most prominent elements.
-
-### Output:
-Strictly return in JSON format:
-{
-    "prompt": "Your detailed description here."
-}
-
-### Chat History:
-<chat_history>
-{{MESSAGES:END:6}}
-</chat_history>
-```
 
 #### `IMAGE_SIZE`
 
@@ -2424,8 +2273,7 @@ Strictly return in JSON format:
 - Type: `bool`
 - Default: `False`
 - Description: If enabled, merges OAuth accounts with existing accounts using the same email
-address. This is considered unsafe as not all OAuth providers will verify email addresses and can lead to
-potential account takeovers.
+address. This is considered unsafe as not all OAuth providers will verify email addresses and can lead to potential account takeovers.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `OAUTH_UPDATE_PICTURE_ON_LOGIN`
@@ -2453,13 +2301,13 @@ See https://support.google.com/cloud/answer/6158849?hl=en
 #### `GOOGLE_CLIENT_ID`
 
 - Type: `str`
-- Description: Sets the client ID for Google OAuth
+- Description: Sets the client ID for Google OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `GOOGLE_CLIENT_SECRET`
 
 - Type: `str`
-- Description: Sets the client secret for Google OAuth
+- Description: Sets the client secret for Google OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `GOOGLE_OAUTH_SCOPE`
@@ -2473,7 +2321,7 @@ See https://support.google.com/cloud/answer/6158849?hl=en
 
 - Type: `str`
 - Default: `<backend>/oauth/google/callback`
-- Description: Sets the redirect URI for Google OAuth
+- Description: Sets the redirect URI for Google OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 ### Microsoft
@@ -2483,19 +2331,19 @@ See https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-registe
 #### `MICROSOFT_CLIENT_ID`
 
 - Type: `str`
-- Description: Sets the client ID for Microsoft OAuth
+- Description: Sets the client ID for Microsoft OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `MICROSOFT_CLIENT_SECRET`
 
 - Type: `str`
-- Description: Sets the client secret for Microsoft OAuth
+- Description: Sets the client secret for Microsoft OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `MICROSOFT_CLIENT_TENANT_ID`
 
 - Type: `str`
-- Description: Sets the tenant ID for Microsoft OAuth
+- Description: Sets the tenant ID for Microsoft OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `MICROSOFT_OAUTH_SCOPE`
@@ -2509,7 +2357,7 @@ See https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-registe
 
 - Type: `str`
 - Default: `<backend>/oauth/microsoft/callback`
-- Description: Sets the redirect URI for Microsoft OAuth
+- Description: Sets the redirect URI for Microsoft OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 ### GitHub
@@ -2519,7 +2367,7 @@ See https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-o
 #### `GITHUB_CLIENT_ID`
 
 - Type: `str`
-- Description: Sets the client ID for GitHub OAuth
+- Description: Sets the client ID for GitHub OAuth.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `GITHUB_CLIENT_SECRET`
@@ -2547,13 +2395,13 @@ See https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-o
 #### `OAUTH_CLIENT_ID`
 
 - Type: `str`
-- Description: Sets the client ID for OIDC
+- Description: Sets the client ID for OIDC.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `OAUTH_CLIENT_SECRET`
 
 - Type: `str`
-- Description: Sets the client secret for OIDC
+- Description: Sets the client secret for OIDC.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `OPENID_PROVIDER_URL`
@@ -2765,7 +2613,7 @@ See https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-o
 
 #### `USER_PERMISSIONS_CHAT_CONTROLS`
 
-- Type: `str`
+- Type: `bool`
 - Default: `True`
 - Description: Enables or disables user permission to access chat controls.
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -2793,14 +2641,14 @@ See https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-o
 
 #### `USER_PERMISSIONS_CHAT_STT`
 
-- Type: `str`
+- Type: `bool`
 - Default: `True`
 - Description: Enables or disables user permission to use Speech-to-Text in chats.
 - Persistence: This environment variable is a `PersistentConfig` variable.
 
 #### `USER_PERMISSIONS_CHAT_TTS`
 
-- Type: `str`
+- Type: `bool`
 - Default: `True`
 - Description: Enables or disables user permission to use Text-to-Speech in chats.
 - Persistence: This environment variable is a `PersistentConfig` variable.
@@ -2986,7 +2834,7 @@ These variables are not specific to Open WebUI but can still be valuable in cert
 - Type: `str`
 - Default: `False`
 - Description: Enables S3 object tagging after uploads for better organization, searching, and integration with file management policies. Always set to `False` when using Cloudflare R2, as R2 does not support object tagging.
-- 
+
 #### Google Cloud Storage
 
 #### `GOOGLE_APPLICATION_CREDENTIALS_JSON`
