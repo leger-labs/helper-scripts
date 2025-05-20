@@ -1,0 +1,83 @@
+{
+    "provider_mappings": {
+        "VECTOR_DB": {
+            "enum_values": ["chroma", "elasticsearch", "milvus", "opensearch", "pgvector", "qdrant", "pinecone"],
+            "provider_fields": {
+                "chroma": [
+                    "CHROMA_TENANT",
+                    "CHROMA_DATABASE",
+                    "CHROMA_HTTP_HOST",
+                    "CHROMA_HTTP_PORT",
+                    "CHROMA_HTTP_HEADERS",
+                    "CHROMA_HTTP_SSL",
+                    "CHROMA_CLIENT_AUTH_PROVIDER",
+                    "CHROMA_CLIENT_AUTH_CREDENTIALS"
+                ],
+                "elasticsearch": [
+                    "ELASTICSEARCH_API_KEY",
+                    "ELASTICSEARCH_CA_CERTS",
+                    "ELASTICSEARCH_CLOUD_ID",
+                    "ELASTICSEARCH_INDEX_PREFIX",
+                    "ELASTICSEARCH_PASSWORD",
+                    "ELASTICSEARCH_URL",
+                    "ELASTICSEARCH_USERNAME"
+                ],
+                "milvus": [
+                    "MILVUS_URI",
+                    "MILVUS_DB",
+                    "MILVUS_TOKEN",
+                    "MILVUS_INDEX_TYPE",
+                    "MILVUS_METRIC_TYPE",
+                    "MILVUS_HNSW_M",
+                    "MILVUS_HNSW_EFCONSTRUCTION",
+                    "MILVUS_IVF_FLAT_NLIST"
+                ],
+                "opensearch": [
+                    "OPENSEARCH_CERT_VERIFY",
+                    "OPENSEARCH_PASSWORD",
+                    "OPENSEARCH_SSL",
+                    "OPENSEARCH_URI",
+                    "OPENSEARCH_USERNAME"
+                ],
+                "pgvector": [
+                    "PGVECTOR_DB_URL",
+                    "PGVECTOR_INITIALIZE_MAX_VECTOR_LENGTH"
+                ],
+                "qdrant": [
+                    "QDRANT_API_KEY",
+                    "QDRANT_URI",
+                    "QDRANT_ON_DISK",
+                    "QDRANT_PREFER_GRPC",
+                    "QDRANT_GRPC_PORT",
+                    "ENABLE_QDRANT_MULTITENANCY_MODE"
+                ],
+                "pinecone": [
+                    "PINECONE_API_KEY",
+                    "PINECONE_ENVIRONMENT",
+                    "PINECONE_INDEX_NAME",
+                    "PINECONE_DIMENSION",
+                    "PINECONE_METRIC",
+                    "PINECONE_CLOUD"
+                ]
+            }
+        },
+        "MILVUS_INDEX_TYPE": {
+            "enum_values": ["AUTOINDEX", "FLAT", "IVF_FLAT", "HNSW"],
+            "provider_fields": {
+                "HNSW": [
+                    "MILVUS_HNSW_M",
+                    "MILVUS_HNSW_EFCONSTRUCTION"
+                ],
+                "IVF_FLAT": [
+                    "MILVUS_IVF_FLAT_NLIST"
+                ]
+            }
+        }
+    },
+    "boolean_selectors": {
+        "ENABLE_QDRANT_MULTITENANCY_MODE": {
+            "value": true,
+            "provider_fields": [] 
+        }
+    }
+}

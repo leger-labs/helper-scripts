@@ -1,0 +1,162 @@
+{
+  "provider_mappings": {
+    "CODE_EXECUTION_ENGINE": {
+      "enum_values": [
+        "pyodide",
+        "jupyter"
+      ],
+      "provider_fields": {
+        "jupyter": [
+          "CODE_EXECUTION_JUPYTER_URL",
+          "CODE_EXECUTION_JUPYTER_AUTH",
+          "CODE_EXECUTION_JUPYTER_AUTH_TOKEN",
+          "CODE_EXECUTION_JUPYTER_AUTH_PASSWORD",
+          "CODE_EXECUTION_JUPYTER_TIMEOUT"
+        ],
+        "pyodide": []
+      }
+    },
+    "CODE_INTERPRETER_ENGINE": {
+      "enum_values": [
+        "pyodide",
+        "jupyter"
+      ],
+      "provider_fields": {
+        "jupyter": [
+          "CODE_INTERPRETER_JUPYTER_URL",
+          "CODE_INTERPRETER_JUPYTER_AUTH",
+          "CODE_INTERPRETER_JUPYTER_AUTH_TOKEN",
+          "CODE_INTERPRETER_JUPYTER_AUTH_PASSWORD",
+          "CODE_INTERPRETER_JUPYTER_TIMEOUT"
+        ],
+        "pyodide": []
+      }
+    }
+  },
+  "boolean_selectors": {
+    "ENABLE_SIGNUP": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_LOGIN_FORM": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_CHANNELS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_ADMIN_EXPORT": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_ADMIN_CHAT_ACCESS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_USER_WEBHOOKS": {
+      "value": true,
+      "provider_fields": [
+        "WEBHOOK_URL"
+      ]
+    },
+    "ENABLE_PERSISTENT_CONFIG": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_REALTIME_CHAT_SAVE": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_TITLE_GENERATION": {
+      "value": true,
+      "provider_fields": [
+        "TITLE_GENERATION_PROMPT_TEMPLATE"
+      ]
+    },
+    "ENABLE_OLLAMA_API": {
+      "value": true,
+      "provider_fields": [
+        "OLLAMA_BASE_URL",
+        "OLLAMA_BASE_URLS"
+      ]
+    },
+    "ENABLE_OPENAI_API": {
+      "value": true,
+      "provider_fields": [
+        "OPENAI_API_BASE_URL",
+        "OPENAI_API_BASE_URLS",
+        "OPENAI_API_KEY",
+        "OPENAI_API_KEYS"
+      ]
+    },
+    "ENABLE_CODE_EXECUTION": {
+      "value": true,
+      "provider_fields": [
+        "CODE_EXECUTION_ENGINE",
+        "CODE_EXECUTION_JUPYTER_URL",
+        "CODE_EXECUTION_JUPYTER_AUTH",
+        "CODE_EXECUTION_JUPYTER_AUTH_TOKEN",
+        "CODE_EXECUTION_JUPYTER_AUTH_PASSWORD",
+        "CODE_EXECUTION_JUPYTER_TIMEOUT"
+      ]
+    },
+    "ENABLE_CODE_INTERPRETER": {
+      "value": true,
+      "provider_fields": [
+        "CODE_INTERPRETER_ENGINE",
+        "CODE_INTERPRETER_PROMPT_TEMPLATE",
+        "CODE_INTERPRETER_JUPYTER_URL",
+        "CODE_INTERPRETER_JUPYTER_AUTH",
+        "CODE_INTERPRETER_JUPYTER_AUTH_TOKEN",
+        "CODE_INTERPRETER_JUPYTER_AUTH_PASSWORD",
+        "CODE_INTERPRETER_JUPYTER_TIMEOUT"
+      ]
+    },
+    "ENABLE_DIRECT_CONNECTIONS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_AUTOCOMPLETE_GENERATION": {
+      "value": true,
+      "provider_fields": [
+        "AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH",
+        "AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE"
+      ]
+    },
+    "ENABLE_EVALUATION_ARENA_MODELS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_MESSAGE_RATING": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_COMMUNITY_SHARING": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_TAGS_GENERATION": {
+      "value": true,
+      "provider_fields": [
+        "TAGS_GENERATION_PROMPT_TEMPLATE"
+      ]
+    },
+    "ENABLE_API_KEY": {
+      "value": true,
+      "provider_fields": []
+    },
+    "ENABLE_API_KEY_ENDPOINT_RESTRICTIONS": {
+      "value": true,
+      "provider_fields": [
+        "API_KEY_ALLOWED_ENDPOINTS"
+      ]
+    },
+    "SHOW_ADMIN_DETAILS": {
+      "value": true,
+      "provider_fields": [
+        "ADMIN_EMAIL"
+      ]
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "provider_mappings": {
+    "IMAGE_GENERATION_ENGINE": {
+      "enum_values": [
+        "openai",
+        "comfyui",
+        "automatic1111",
+        "gemini"
+      ],
+      "provider_fields": {
+        "openai": [
+          "IMAGES_OPENAI_API_BASE_URL",
+          "IMAGES_OPENAI_API_KEY"
+        ],
+        "comfyui": [
+          "COMFYUI_BASE_URL",
+          "COMFYUI_API_KEY",
+          "COMFYUI_WORKFLOW",
+          "IMAGE_STEPS"
+        ],
+        "automatic1111": [
+          "AUTOMATIC1111_BASE_URL",
+          "AUTOMATIC1111_API_AUTH",
+          "AUTOMATIC1111_CFG_SCALE",
+          "AUTOMATIC1111_SAMPLER",
+          "AUTOMATIC1111_SCHEDULER",
+          "IMAGE_STEPS"
+        ],
+        "gemini": [
+          "GEMINI_API_BASE_URL",
+          "GEMINI_API_KEY",
+          "IMAGES_GEMINI_API_BASE_URL",
+          "IMAGES_GEMINI_API_KEY"
+        ]
+      }
+    }
+  },
+  "boolean_selectors": {
+    "ENABLE_IMAGE_GENERATION": {
+      "value": true,
+      "provider_fields": [
+        "IMAGE_GENERATION_ENGINE",
+        "IMAGE_SIZE",
+        "IMAGE_STEPS",
+        "IMAGE_GENERATION_MODEL",
+        "ENABLE_IMAGE_PROMPT_GENERATION",
+        "IMAGE_PROMPT_GENERATION_PROMPT_TEMPLATE"
+      ]
+    }
+  }
+}

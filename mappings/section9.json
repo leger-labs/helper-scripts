@@ -1,0 +1,51 @@
+{
+  "provider_mappings": {},
+  "boolean_selectors": {
+    "WEBUI_AUTH": {
+      "value": true,
+      "provider_fields": [
+        "WEBUI_SECRET_KEY",
+        "WEBUI_SESSION_COOKIE_SAME_SITE",
+        "WEBUI_SESSION_COOKIE_SECURE",
+        "WEBUI_AUTH_COOKIE_SAME_SITE",
+        "WEBUI_AUTH_COOKIE_SECURE"
+      ]
+    },
+    "ENABLE_FORWARD_USER_INFO_HEADERS": {
+      "value": false,
+      "provider_fields": []
+    },
+    "ENABLE_WEB_LOADER_SSL_VERIFICATION": {
+      "value": true,
+      "provider_fields": []
+    },
+    "SAFE_MODE": {
+      "value": false,
+      "provider_fields": []
+    },
+    "OFFLINE_MODE": {
+      "value": false,
+      "provider_fields": []
+    },
+    "RAG_EMBEDDING_MODEL_AUTO_UPDATE": {
+      "value": true,
+      "provider_fields": [
+        "RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE"
+      ]
+    },
+    "RAG_RERANKING_MODEL_AUTO_UPDATE": {
+      "value": true,
+      "provider_fields": [
+        "RAG_RERANKING_MODEL_TRUST_REMOTE_CODE"
+      ]
+    }
+  },
+  "fallback_relationships": {
+    "WEBUI_AUTH_COOKIE_SAME_SITE": {
+      "fallback": "WEBUI_SESSION_COOKIE_SAME_SITE"
+    },
+    "WEBUI_AUTH_COOKIE_SECURE": {
+      "fallback": "WEBUI_SESSION_COOKIE_SECURE"
+    }
+  }
+}

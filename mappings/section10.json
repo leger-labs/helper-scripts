@@ -1,0 +1,83 @@
+{
+  "provider_mappings": {},
+  "boolean_selectors": {
+    "USER_PERMISSIONS_CHAT_CONTROLS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_FILE_UPLOAD": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_DELETE": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_EDIT": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_STT": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_TTS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_CALL": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_MULTIPLE_MODELS": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_CHAT_TEMPORARY": {
+      "value": true,
+      "provider_fields": [
+        "USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED"
+      ]
+    },
+    "USER_PERMISSIONS_FEATURES_DIRECT_TOOL_SERVERS": {
+      "value": false,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_FEATURES_WEB_SEARCH": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_FEATURES_IMAGE_GENERATION": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_FEATURES_CODE_INTERPRETER": {
+      "value": true,
+      "provider_fields": []
+    },
+    "USER_PERMISSIONS_WORKSPACE_MODELS_ACCESS": {
+      "value": false,
+      "provider_fields": [
+        "USER_PERMISSIONS_WORKSPACE_MODELS_ALLOW_PUBLIC_SHARING"
+      ]
+    },
+    "USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ACCESS": {
+      "value": false,
+      "provider_fields": [
+        "USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ALLOW_PUBLIC_SHARING"
+      ]
+    },
+    "USER_PERMISSIONS_WORKSPACE_PROMPTS_ACCESS": {
+      "value": false,
+      "provider_fields": [
+        "USER_PERMISSIONS_WORKSPACE_PROMPTS_ALLOW_PUBLIC_SHARING"
+      ]
+    },
+    "USER_PERMISSIONS_WORKSPACE_TOOLS_ACCESS": {
+      "value": false,
+      "provider_fields": [
+        "USER_PERMISSIONS_WORKSPACE_TOOLS_ALLOW_PUBLIC_SHARING"
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "provider_mappings": {
+    "STORAGE_PROVIDER": {
+      "enum_values": [
+        "s3",
+        "gcs",
+        "azure",
+        ""
+      ],
+      "provider_fields": {
+        "s3": [
+          "S3_ACCESS_KEY_ID",
+          "S3_SECRET_ACCESS_KEY",
+          "S3_BUCKET_NAME",
+          "S3_ENDPOINT_URL",
+          "S3_REGION_NAME",
+          "S3_KEY_PREFIX",
+          "S3_ADDRESSING_STYLE",
+          "S3_USE_ACCELERATE_ENDPOINT",
+          "S3_ENABLE_TAGGING"
+        ],
+        "gcs": [
+          "GOOGLE_APPLICATION_CREDENTIALS_JSON",
+          "GCS_BUCKET_NAME"
+        ],
+        "azure": [
+          "AZURE_STORAGE_ENDPOINT",
+          "AZURE_STORAGE_CONTAINER_NAME",
+          "AZURE_STORAGE_KEY"
+        ],
+        "": []
+      }
+    }
+  },
+  "boolean_selectors": {
+    "ENABLE_WEBSOCKET_SUPPORT": {
+      "value": true,
+      "provider_fields": [
+        "WEBSOCKET_MANAGER",
+        "WEBSOCKET_REDIS_URL",
+        "WEBSOCKET_SENTINEL_HOSTS",
+        "WEBSOCKET_SENTINEL_PORT"
+      ]
+    }
+  }
+}

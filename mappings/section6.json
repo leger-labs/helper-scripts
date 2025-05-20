@@ -1,0 +1,53 @@
+{
+  "provider_mappings": {},
+  "boolean_selectors": {
+    "ENABLE_OAUTH_SIGNUP": {
+      "value": true,
+      "provider_fields": [
+        "OAUTH_MERGE_ACCOUNTS_BY_EMAIL",
+        "OAUTH_UPDATE_PICTURE_ON_LOGIN",
+        "WEBUI_AUTH_TRUSTED_EMAIL_HEADER",
+        "WEBUI_AUTH_TRUSTED_NAME_HEADER",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "GOOGLE_OAUTH_SCOPE",
+        "GOOGLE_REDIRECT_URI",
+        "MICROSOFT_CLIENT_ID",
+        "MICROSOFT_CLIENT_SECRET",
+        "MICROSOFT_CLIENT_TENANT_ID",
+        "MICROSOFT_OAUTH_SCOPE",
+        "MICROSOFT_REDIRECT_URI",
+        "GITHUB_CLIENT_ID",
+        "GITHUB_CLIENT_SECRET",
+        "GITHUB_CLIENT_SCOPE",
+        "GITHUB_CLIENT_REDIRECT_URI",
+        "OAUTH_CLIENT_ID",
+        "OAUTH_CLIENT_SECRET",
+        "OPENID_PROVIDER_URL",
+        "OPENID_REDIRECT_URI",
+        "OAUTH_SCOPES",
+        "OAUTH_CODE_CHALLENGE_METHOD",
+        "OAUTH_PROVIDER_NAME",
+        "OAUTH_USERNAME_CLAIM",
+        "OAUTH_EMAIL_CLAIM",
+        "OAUTH_PICTURE_CLAIM",
+        "OAUTH_GROUP_CLAIM"
+      ]
+    },
+    "ENABLE_OAUTH_ROLE_MANAGEMENT": {
+      "value": true,
+      "provider_fields": [
+        "OAUTH_ROLES_CLAIM",
+        "OAUTH_ALLOWED_ROLES",
+        "OAUTH_ADMIN_ROLES"
+      ]
+    },
+    "ENABLE_OAUTH_GROUP_MANAGEMENT": {
+      "value": true,
+      "provider_fields": [
+        "OAUTH_GROUP_CLAIM",
+        "OAUTH_ALLOWED_DOMAINS"
+      ]
+    }
+  }
+}

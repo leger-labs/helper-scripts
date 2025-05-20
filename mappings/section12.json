@@ -1,0 +1,114 @@
+{
+  "provider_mappings": {
+    "WEB_SEARCH_ENGINE": {
+      "enum_values": [
+        "searxng",
+        "google_pse",
+        "brave",
+        "kagi",
+        "mojeek",
+        "bocha",
+        "serpstack",
+        "serper",
+        "serply",
+        "searchapi",
+        "serpapi",
+        "duckduckgo",
+        "tavily",
+        "jina",
+        "bing",
+        "exa",
+        "perplexity",
+        "sougou"
+      ],
+      "provider_fields": {
+        "searxng": [
+          "SEARXNG_QUERY_URL"
+        ],
+        "google_pse": [
+          "GOOGLE_PSE_API_KEY",
+          "GOOGLE_PSE_ENGINE_ID"
+        ],
+        "brave": [
+          "BRAVE_SEARCH_API_KEY"
+        ],
+        "kagi": [
+          "KAGI_SEARCH_API_KEY"
+        ],
+        "mojeek": [
+          "MOJEEK_SEARCH_API_KEY"
+        ],
+        "bocha": [
+          "BOCHA_SEARCH_API_KEY"
+        ],
+        "serpstack": [
+          "SERPSTACK_API_KEY",
+          "SERPSTACK_HTTPS"
+        ],
+        "serper": [
+          "SERPER_API_KEY"
+        ],
+        "serply": [
+          "SERPLY_API_KEY"
+        ],
+        "searchapi": [
+          "SEARCHAPI_API_KEY",
+          "SEARCHAPI_ENGINE"
+        ],
+        "serpapi": [
+          "SERPAPI_API_KEY",
+          "SERPAPI_ENGINE"
+        ],
+        "tavily": [
+          "TAVILY_API_KEY",
+          "TAVILY_EXTRACT_DEPTH"
+        ],
+        "jina": [
+          "JINA_API_KEY"
+        ],
+        "bing": [
+          "BING_SEARCH_V7_ENDPOINT",
+          "BING_SEARCH_V7_SUBSCRIPTION_KEY"
+        ],
+        "exa": [
+          "EXA_API_KEY"
+        ],
+        "perplexity": [
+          "PERPLEXITY_API_KEY"
+        ],
+        "sougou": [
+          "SOUGOU_API_SID",
+          "SOUGOU_API_SK"
+        ]
+      }
+    },
+    "WEB_LOADER_ENGINE": {
+      "enum_values": [
+        "safe_web",
+        "requests",
+        "playwright"
+      ],
+      "provider_fields": {
+        "playwright": [
+          "PLAYWRIGHT_WS_URL",
+          "PLAYWRIGHT_TIMEOUT"
+        ],
+        "requests": [],
+        "safe_web": []
+      }
+    }
+  },
+  "boolean_selectors": {
+    "ENABLE_WEB_SEARCH": {
+      "value": true,
+      "provider_fields": [
+        "WEB_SEARCH_ENGINE",
+        "WEB_SEARCH_RESULT_COUNT",
+        "WEB_SEARCH_CONCURRENT_REQUESTS",
+        "WEB_SEARCH_TRUST_ENV",
+        "ENABLE_SEARCH_QUERY_GENERATION",
+        "BYPASS_WEB_SEARCH_EMBEDDING_AND_RETRIEVAL"
+      ]
+    }
+  }
+}

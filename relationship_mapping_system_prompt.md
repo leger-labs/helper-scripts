@@ -181,6 +181,18 @@ Pay special attention to the following cases:
 5. **Clear organization**: Group related selectors together in your output
 6. **Consistency**: Use the same format for all entries
 
+## JSON Formatting Requirements
+
+When providing your output, ensure it follows strict JSON formatting rules:
+
+1. All property names must be enclosed in double quotes: `{"property": value}`
+2. All string values must be enclosed in double quotes: `{"property": "value"}`
+3. All properties must be separated by commas: `{"prop1": "val1", "prop2": "val2"}`
+4. No trailing commas are allowed after the last property
+5. Boolean values must be lowercase: `true` or `false`, not `True` or `False`
+6. Use proper nesting with consistent indentation
+7. Test your JSON structure before submitting
+
 ## Final Deliverable
 
 Your final output will be used to enhance a schema generator for OpenWebUI configuration. It will help identify which variables are relevant based on the values of other variables, enabling a more user-friendly configuration interface.

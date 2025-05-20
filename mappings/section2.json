@@ -1,0 +1,65 @@
+{
+  "provider_mappings": {
+    "AUDIO_STT_ENGINE": {
+      "enum_values": [
+        "",
+        "openai",
+        "deepgram",
+        "azure"
+      ],
+      "provider_fields": {
+        "": [
+          "WHISPER_MODEL",
+          "WHISPER_MODEL_DIR",
+          "WHISPER_VAD_FILTER",
+          "WHISPER_MODEL_AUTO_UPDATE",
+          "WHISPER_LANGUAGE"
+        ],
+        "openai": [
+          "AUDIO_STT_MODEL",
+          "AUDIO_STT_OPENAI_API_BASE_URL",
+          "AUDIO_STT_OPENAI_API_KEY"
+        ],
+        "deepgram": [
+          "DEEPGRAM_API_KEY"
+        ],
+        "azure": [
+          "AUDIO_STT_AZURE_API_KEY",
+          "AUDIO_STT_AZURE_REGION",
+          "AUDIO_STT_AZURE_LOCALES"
+        ]
+      }
+    },
+    "AUDIO_TTS_ENGINE": {
+      "enum_values": [
+        "",
+        "azure",
+        "elevenlabs",
+        "openai",
+        "transformers"
+      ],
+      "provider_fields": {
+        "": [],
+        "azure": [
+          "AUDIO_TTS_API_KEY",
+          "AUDIO_TTS_AZURE_SPEECH_REGION",
+          "AUDIO_TTS_AZURE_SPEECH_OUTPUT_FORMAT"
+        ],
+        "elevenlabs": [
+          "AUDIO_TTS_API_KEY"
+        ],
+        "openai": [
+          "AUDIO_TTS_MODEL",
+          "AUDIO_TTS_VOICE",
+          "AUDIO_TTS_SPLIT_ON",
+          "AUDIO_TTS_OPENAI_API_BASE_URL",
+          "AUDIO_TTS_OPENAI_API_KEY"
+        ],
+        "transformers": [
+          "AUDIO_TTS_API_KEY"
+        ]
+      }
+    }
+  },
+  "boolean_selectors": {}
+}

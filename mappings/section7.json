@@ -1,0 +1,33 @@
+{
+  "provider_mappings": {
+    "CONTENT_EXTRACTION_ENGINE": {
+      "enum_values": [
+        "",
+        "external",
+        "tika",
+        "docling",
+        "document_intelligence",
+        "mistral_ocr"
+      ],
+      "provider_fields": {
+        "": [],
+        "external": [
+          "EXTERNAL_DOCUMENT_LOADER_URL",
+          "EXTERNAL_DOCUMENT_LOADER_API_KEY"
+        ],
+        "tika": [
+          "TIKA_SERVER_URL"
+        ],
+        "docling": [
+          "DOCLING_SERVER_URL",
+          "DOCLING_OCR_ENGINE",
+          "DOCLING_OCR_LANG"
+        ],
+        "document_intelligence": [],
+        "mistral_ocr": [
+          "MISTRAL_OCR_API_KEY"
+        ]
+      }
+    }
+  }
+}
